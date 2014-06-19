@@ -27,6 +27,7 @@ After you install, there will be a Tools menu entry for "WaniKani 2 Anki".  This
 There is a field for your WaniKani API Key, enter it here.
 Choose to have just Kanji, or just Vocab, or both.
 Choose to have just the WaniKani direction, just the reverse of that, or both.
+The direction field only affects Vocabulary cards; Kanji cards only have meaning and reading in the Wanikani direction.
 Choose to have a Tangorin (http://tangorin.com/) link to the relevant entry inserted below the answer portion of each ard.
 
 These last to preferences get backed into the templates for the "Note Types", meaning that presently you have to throw away the decks and those note types to change them.  Ought to be a way around that.  Tangorin wasn't doing it for me, nor was having both directions of the cards.  I may be a Special Case.
