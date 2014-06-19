@@ -142,39 +142,37 @@ def updateWaniKaniDeck():
         tangorin = "<br/><a href=\"http://www.tangorin.com/kanji/{{Kanji}}\">Tangorin</a>"
 
     if kanjiJson:
-         wk_model = mm.byName(KANJI_MODEL)
-         if not wk_model:
-             wk_model = mm.new(KANJI_MODEL)
-             mm.addField(wk_model, mm.newField("Kanji"))
-             mm.addField(wk_model, mm.newField("Reading"))
-             mm.addField(wk_model, mm.newField("Onyomi"))
-             mm.addField(wk_model, mm.newField("Kunyomi"))
-             mm.addField(wk_model, mm.newField("Meaning"))
-             if wkconf['card_direction'] != 'reverseDirection':
-                 tmpl = mm.newTemplate("WaniKani Kanji Meaning")
-                 tmpl['qfmt'] = "<span style=\"font-size:100px;\">{{Kanji}}</span><br/>What is the <b>meaning</b>?"
-                 tmpl['afmt'] = "{{FrontSide}}\n\n<hr id='answer'>\n\n"\
-                     "<span style=\"font-size:30px;\">{{Meaning}}</span>"+tangorin
-                 mm.addTemplate(wk_model, tmpl)
-             if wkconf['card_direction'] != 'wanikaniDirection':
-                 tmpl = mm.newTemplate("WaniKani Kanji (Reading)")
-                 tmpl['qfmt'] = "<span style=\"font-size:100px;\">{{Kanji}}</span><br/>What is the <b>reading</b>?"
-                 tmpl['afmt'] = "{{FrontSide}}\n\n<hr id='answer'>\n\n"\
-                     "<span style=\"font-size:40px;\">"\
-                     "{{Reading}}</span><br/>"\
-                     "<div style=\"width:50%;float:left;\">"\
-                     "On'yomi:&nbsp;{{Onyomi}}"\
-                     "</div><div style=\"width:50%;float:left;\">"\
-                     "Kun'yomi:&nbsp;{{Kunyomi}}"\
-                     "</div><div style=\"clear:left;\"></div>"+tangorin
-                 mm.addTemplate(wk_model, tmpl)
-             mm.add(wk_model)
-         mm.setCurrent(wk_model)
-         wk_model['did'] = mw.col.decks.id(KANJI_DECK)
-         mm.save(wk_model)
-         wki = KanjiImporter(mw.col,kanjiJson)
-         wki.initMapping()
-         wki.run()
+        wk_model = mm.byName(KANJI_MODEL)
+        if not wk_model:
+            wk_model = mm.new(KANJI_MODEL)
+            mm.addField(wk_model, mm.newField("Kanji"))
+            mm.addField(wk_model, mm.newField("Reading"))
+            mm.addField(wk_model, mm.newField("Onyomi"))
+            mm.addField(wk_model, mm.newField("Kunyomi"))
+            mm.addField(wk_model, mm.newField("Meaning"))
+            tmpl = mm.newTemplate("WaniKani Kanji Meaning")
+            tmpl['qfmt'] = "<span style=\"font-size:100px;\">{{Kanji}}</span><br/>What is the <b>meaning</b>?"
+            tmpl['afmt'] = "{{FrontSide}}\n\n<hr id='answer'>\n\n"\
+                "<span style=\"font-size:30px;\">{{Meaning}}</span>"+tangorin
+            mm.addTemplate(wk_model, tmpl)
+            tmpl1 = mm.newTemplate("WaniKani Kanji (Reading)")
+            tmpl1['qfmt'] = "<span style=\"font-size:100px;\">{{Kanji}}</span><br/>What is the <b>reading</b>?"
+            tmpl1['afmt'] = "{{FrontSide}}\n\n<hr id='answer'>\n\n"\
+                "<span style=\"font-size:40px;\">"\
+                "{{Reading}}</span><br/>"\
+                "<div style=\"width:50%;float:left;\">"\
+                "On'yomi:&nbsp;{{Onyomi}}"\
+                "</div><div style=\"width:50%;float:left;\">"\
+                "Kun'yomi:&nbsp;{{Kunyomi}}"\
+                "</div><div style=\"clear:left;\"></div>"+tangorin
+            mm.addTemplate(wk_model, tmpl1)
+            mm.add(wk_model)
+        mm.setCurrent(wk_model)
+        wk_model['did'] = mw.col.decks.id(KANJI_DECK)
+        mm.save(wk_model)
+        wki = KanjiImporter(mw.col,kanjiJson)
+        wki.initMapping()
+        wki.run()
     if vocabJson:
          wk_model = mm.byName(VOCAB_MODEL)
          if not wk_model:
