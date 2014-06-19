@@ -18,12 +18,14 @@ import json
 import sys
 
 WANIKANI_API_KEY = '7cabb1e2050da36761ad124d447ad5e0'
-KANJI_URL = 'https://www.wanikani.com/api/v1.1/user/{}/kanji'
-VOCAB_URL = 'https://www.wanikani.com/api/v1.1/user/{}/vocabulary'
+KANJI_URL = 'https://www.wanikani.com/api/v1.2/user/{}/kanji'
+VOCAB_URL = 'https://www.wanikani.com/api/v1.2/user/{}/vocabulary'
 KANJI_DECK = "WaniKani Kanji"
 VOCAB_DECK = "WaniKani Vocab"
 KANJI_MODEL = "WaniKani Kanji Model"
 VOCAB_MODEL = "WaniKani Vocab Model"
+LEVELS_PER_CHUNK = 10
+TOTAL_LEVELS = 50
 
 wkconf = { 'key': '', 'deck_separation': 'bothSeparately', 'card_direction': 'wanikaniDirection', 'include_tangorin_link': False }
 
@@ -35,7 +37,7 @@ class WaniKaniImporter(NoteImporter):
     def foreignNotes(self):
         notes = []
         for item in self.correctPart(): # json structures different
-            if item[u'stats']:
+            if item[u'user_specific']:
                 note = self.noteFromJson(item)
                 notes.append(note)
         return notes
@@ -79,7 +81,7 @@ class VocabImporter(WaniKaniImporter):
         return 3  # see NoteImporter
 
     def correctPart(self):
-        return self.file[u'requested_information'][u'general']
+        return self.file[u'requested_information']  #[u'general']
 
     def noteFromJson(self, jsonDict):
         note = ForeignNote()
@@ -90,13 +92,22 @@ class VocabImporter(WaniKaniImporter):
         return note
 
 def getjsonbolus(url):
-    parsed = None
-    try:
-        response = urllib2.urlopen(url)
-        data = response.read()
-        parsed = json.loads(data)
-    except Exception as e:
-        showInfo('Something unfortunate happened trying to contact WaniKani, as below, please try again later. {}'.format(e))
+    parsed = {}
+    for i in range(0,(TOTAL_LEVELS/LEVELS_PER_CHUNK)):
+        if url[-1] is not "/":
+            url = url + "/"
+        levels = range(LEVELS_PER_CHUNK*i+1,LEVELS_PER_CHUNK*(i+1)+1)
+        chunk_url = url + ','.join("{0}".format(n) for n in levels)
+        try:
+            response = urllib2.urlopen(chunk_url)
+            data = response.read()
+            chunk = json.loads(data)
+            if u'requested_information' in parsed:
+                parsed[u'requested_information'].extend(chunk[u'requested_information'])
+            else:
+                parsed = chunk
+        except Exception as e:
+            showInfo('Something unfortunate happened trying to contact WaniKani, as below, please try again later. {}'.format(e))
     return parsed
 
 def getvocab():
